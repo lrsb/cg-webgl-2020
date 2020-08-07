@@ -1,5 +1,371 @@
-<html>
-  <body>
-  Hello JS!
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Missile simulator - 10566867</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <script type="text/javascript" src="js/misc.js"></script>
+    <script type="text/javascript" src="js/lights.js"></script>
+    <script type="text/javascript" src="js/events.js"></script>
+    <script type="text/javascript" src="js/models.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/quaternion@1.1.0/quaternion.min.js" integrity="sha256-7iOuqHmWLLygEIEVQDZA+e3Ay7iWZlC1NedjiNCqp/k=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webgl-obj-loader@2.0.8/dist/webgl-obj-loader.min.js" integrity="sha256-y5KHXaT6GeueInIDZFF8gRL60of3F/6bFoZ8Baq68kQ=" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</head>
+<body class="loading">
+<!--
+    1 - Missile Simulator
+    Design a simulator of a point-to-point missile in a 3D landscape. The point of view must be in third-person.
+    The missile must follow a parabolic-like trajectory and its orientation must be interpolated accordingly.
+    (+1pt) choose start and end points at runtime with the mouse
+    10566867 Object Missile simulator
+-->
+<canvas id="canvas">Your browser does not support the HTML5 canvas element.</canvas>
+
+<div class="status-panel">
+    <div>
+        <p style="text-align: center; margin-bottom: 3%">Missile</p>
+        <div class="row">
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">X</p>
+                    <p id="missile-x" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">Y</p>
+                    <p id="missile-y" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">Z</p>
+                    <p id="missile-z" style="text-align: center"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">θ</p>
+                    <p id="missile-theta" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">φ</p>
+                    <p id="missile-phi" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">%</p>
+                    <p id="missile-completion" style="text-align: center"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p style="text-align: center; margin-bottom: 3%">Camera</p>
+        <div class="row">
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">X</p>
+                    <p id="camera-x" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">Y</p>
+                    <p id="camera-y" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">Z</p>
+                    <p id="camera-z" style="text-align: center"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">θ</p>
+                    <p id="camera-theta" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">φ</p>
+                    <p id="camera-phi" style="text-align: center"></p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <p style="text-align: center; margin-bottom: 0">Zoom</p>
+                    <p id="camera-zoom" style="text-align: center"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="settings-panel">
+    <div class="row">
+        <div class="col-8">
+            <p style="text-align: center; margin-bottom: 3%">Start point</p>
+            <div class="row">
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">X</p>
+                        <p id="start-x" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">Y</p>
+                        <p id="start-y" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">Z</p>
+                        <p id="start-z" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <button id="start-point" type="button" class="btn btn-success" onclick="toggleStartPoint()">Set</button>
+                </div>
+            </div>
+            <p style="text-align: center; margin-bottom: 3%">End point</p>
+            <div class="row">
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">X</p>
+                        <p id="end-x" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">Y</p>
+                        <p id="end-y" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="element">
+                        <p style="text-align: center; margin-bottom: 0">Z</p>
+                        <p id="end-z" style="text-align: center"></p>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <button id="end-point" type="button" class="btn btn-success" onclick="toggleEndPoint()">Set</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <p style="text-align: center; margin-bottom: 3%">Missile</p>
+            <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" name="options" id="texture-1" checked onclick="setTexture(true)">Texture 1
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="options" id="texture-2" onclick="setTexture(false)">Texture 2
+                </label>
+            </div>
+            <p style="text-align: center; margin-top: 13%; margin-bottom: 3%">Camera</p>
+            <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" name="options" id="look-at" checked onclick="setCamera(true)">Look At
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" name="options" id="free-view" onclick="setCamera(false)">Free View
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lights-panel">
+    <div id="light-type-menu" style="width: 100%" class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+        <label class="btn btn-primary active">
+            <input type="radio" name="options" id="direct-light" checked onclick="setDirectLight()">Direct
+        </label>
+        <label class="btn btn-primary">
+            <input type="radio" name="options" id="point-light" onclick="setPointLight()">Point
+        </label>
+        <label class="btn btn-primary">
+            <input type="radio" name="options" id="spot-light" onclick="setSpotLight()">Spot
+        </label>
+    </div>
+
+    <div id="light-panel" role="alert">
+        <div id="direct-pane">
+            <label class="parent-label">Light Direction</label>
+            <div>
+                <div class="row">
+                    <label for="direct-light-position-phi">Φ</label>
+                    <input type="range" min="0" max="360" class="form-control-range" id="direct-light-position-phi"
+                           oninput="changeLightPositionDirect()" value="90">
+                </div>
+
+                <div class="row">
+                    <label for="direct-light-position-theta">θ</label>
+                    <input type="range" min="0" max="360" class="form-control-range" id="direct-light-position-theta"
+                           oninput="changeLightPositionDirect()" value="90">
+                </div>
+            </div>
+        </div>
+
+        <div id="point-pane" style="display: none">
+            <label class="parent-label">Light Position</label>
+            <div class="row">
+                <label for="point-light-position-x">x</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="point-light-position-x"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <div class="row">
+                <label for="point-light-position-y">y</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="point-light-position-y"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <div class="row">
+                <label for="point-light-position-z">z</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="point-light-position-z"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <label class="parent-label">Decay</label>
+            <div class="row">
+                <label for="point-light-decay">d</label>
+                <input id="point-light-decay" class="form-control-range" type="range" min="0.0" max="2.0" step="0.01"
+                       oninput="changeLightDecay()" value="0.0">
+            </div>
+        </div>
+
+        <div id="spot-pane" style="display: none">
+            <label class="parent-label">Light Position</label>
+            <div class="row">
+                <label for="spot-light-position-x">x</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="spot-light-position-x"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <div class="row">
+                <label for="spot-light-position-y">y</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="spot-light-position-y"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <div class="row">
+                <label for="spot-light-position-z">z</label>
+                <input type="range" min="0" max="20" class="form-control-range" id="spot-light-position-z"
+                       oninput="changeLightPositionPoint()" value="0">
+            </div>
+
+            <label class="parent-label">Decay</label>
+            <div class="row">
+                <label for="spot-light-decay">d</label>
+                <input id="spot-light-decay" class="form-control-range" type="range" min="0.0" max="2.0" step="0.01"
+                       oninput="changeLightDecay()" value="0.0">
+            </div>
+
+            <label class="parent-label">Light Direction</label>
+            <div class="row">
+                <label for="point-light-position-phi">Φ</label>
+                <input type="range" min="0" max="360" class="form-control-range" id="point-light-position-phi"
+                       oninput="changeLightPositionDirect()" value="90">
+            </div>
+            <div class="row">
+                <label for="point-light-position-theta">θ</label>
+                <input type="range" min="0" max="360" class="form-control-range" id="point-light-position-theta"
+                       oninput="changeLightPositionDirect()" value="90">
+            </div>
+
+            <label class="parent-label">Cone In-Out</label>
+            <div class="row">
+                <label for="point-light-cone-in">In</label>
+                <input type="range" min="0" max="360" class="form-control-range" id="point-light-cone-in"
+                       oninput="changeLightPositionDirect()" value="90">
+            </div>
+            <div class="row">
+                <label for="point-light-cone-out">Out</label>
+                <input type="range" min="0" max="360" class="form-control-range" id="point-light-cone-out"
+                       oninput="changeLightPositionDirect()" value="90">
+            </div>
+        </div>
+
+        <label class="parent-label mt-1">Colors</label>
+        <div class="row">
+            <div class="col-4">
+                <div class="element">
+                    <label for="light-color" style="width: 100%; text-align: center">Light</label>
+                    <input type="color" id="light-color" class="color-select" oninput="setLightColor()" value="#FFFFFF">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element" style="align-content: center">
+                    <label for="ambient-color" style="width: 100%; text-align: center">Ambient</label>
+                    <input type="color" id="ambient-color" class="color-select" oninput="setAmbientLightColor()" value="#FFFFFF">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element">
+                    <label for="diffuse-color" style="width: 100%; text-align: center">Diffuse</label>
+                    <input type="color" id="diffuse-color" class="color-select" oninput="setDiffuseColor()" value="#FFFFFF">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-4">
+                <div class="element">
+                    <label for="ambient-mat-color" style="width: 100%; text-align: center">Material</label>
+                    <input type="color" id="ambient-mat-color" class="color-select" oninput="setAmbientMatColor()" value="#FFFFFF">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="element" style="align-content: center">
+                    <label for="specular-color" style="width: 100%; text-align: center">Specular</label>
+                    <input type="color" id="specular-color" class="color-select" oninput="setSpecularColor()" value="#FFFFFF">
+                </div>
+            </div>
+        </div>
+        <label class="parent-label mt-1">Specular shiny</label>
+        <div class="row">
+            <label for="specular-shiny">&gamma;</label>
+            <input type="range" min="1" max="200" class="form-control-range" id="specular-shiny" oninput="setSpecShine()" value="200">
+        </div>
+    </div>
+</div>
+
+<div class="control-panel">
+    <label class="parent-label">Flight params</label>
+    <div class="mb-2">
+        <div class="row">
+            <label for="flight-time">Flight time</label>
+            <input type="range" style="width: 95%" min="1" max="10" class="form-control-range" id="flight-time" oninput="flightTimeChanged()" value="5" step="1">
+        </div>
+        <div class="row">
+            <label for="height">Height</label>
+            <input type="range" style="width: 95%" min="-1" max="1" class="form-control-range" id="height" oninput="heightChanged()" value="0" step="0.005">
+        </div>
+    </div>
+    <button id="play" type="button" class="btn btn-success btn-lg" style="float: left; width: 60%" onclick="play()">Play</button>
+    <button type="button" class="btn btn-primary btn-lg" style="float: right; width: 35%" onclick="reset()">Reset</button>
+</div>
+
+<div class="modal"></div>
+</body>
 </html>

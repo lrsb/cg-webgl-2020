@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    background-color: white;
+    font-size: small !important;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 1) url('https://art.pixilart.com/b05178369bdc7fc.gif') 50% 50% no-repeat;
+    background-size: 20% 20%;
+    align-content: center;
+}
+
+body.loading .modal {
+    overflow: hidden;
+    display: block;
+}
+
+.status-panel {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    position: fixed;
+    top: 2em;
+    left: 2em;
+    padding: 1em;
+    border-radius: 0.5em;
+    min-width: 250px;
+}
+
+.settings-panel {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    position: fixed;
+    top: 2em;
+    right: 2em;
+    padding: 1em;
+    border-radius: 0.5em;
+    min-width: 425px;
+}
+
+.lights-panel {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    position: fixed;
+    bottom: 2em;
+    left: 2em;
+    padding: 1em;
+    border-radius: 0.5em;
+    min-width: 250px;
+}
+
+.control-panel {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 10;
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+    padding: 1em;
+    border-radius: 0.5em;
+    min-width: 250px;
+}
+
+.element {
+    background: rgba(50, 50, 50, 0.4);
+    border-radius: 0.3em;
+}
+
+.color-select {
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.row {
+    padding: 0 1em 0 1em;
+}
+
+.row label {
+    margin-bottom: 0;
+    min-width: 20px;
+    font-size: 0.8em;
+}
+
+.row input[type="range"] {
+    width: calc(100% - 20px - 0.5em);
+    margin-left: 0.5em;
+    display: inline-block;
+    float: right;
+}

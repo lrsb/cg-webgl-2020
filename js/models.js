@@ -35,23 +35,22 @@ async function loadModel(modelName) {
         gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-        gl.generateMipmap(gl.TEXTURE_2D)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, texture)
     }
     return {vao, mesh, texture}
 }
 
-function drawModel(model, worldMatrix, viewMatrix, perspectiveMatrix) {
-    const viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix)
-    const projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix)
-    const normalMatrix = utils.invertMatrix(utils.transposeMatrix(viewWorldMatrix))
+function drawModel(model, worldMatrix, cm) {
+    const viewWorldMatrix = utils.multiplyMatrices(cm.viewMatrix, worldMatrix)
+    const projectionMatrix = utils.multiplyMatrices(cm.perspectiveMatrix, viewWorldMatrix)
 
-    const matrixLocation = gl.getUniformLocation(program, 'matrix')
-
-    gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix))
-    //gl.uniformMatrix4fv(vertexMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(vwmatrix))
-    //gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalMatrix))
+    gl.uniform3f(gl.getUniformLocation(program, 'eyePos'), cm.cameraPosition[0], cm.cameraPosition[1], cm.cameraPosition[2])
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'wo_matrix'), gl.FALSE, utils.transposeMatrix(utils.invertMatrix(worldMatrix)))
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'two_matrix'), gl.FALSE, worldMatrix)
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'matrix'), gl.FALSE, utils.transposeMatrix(projectionMatrix))
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, model.texture)

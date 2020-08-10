@@ -307,13 +307,13 @@
             <label class="parent-label">Cone In-Out</label>
             <div class="row">
                 <label for="spot-light-cone-in">In</label>
-                <input class="form-control-range" id="spot-light-cone-in" max="360" min="0" oninput="changeSpotLight()"
+                <input class="form-control-range" id="spot-light-cone-in" max="100" min="0" oninput="changeSpotLight()"
                        type="range" value="60">
             </div>
             <div class="row">
                 <label for="spot-light-cone-out">Out</label>
-                <input class="form-control-range" id="spot-light-cone-out" max="360" min="0" oninput="changeSpotLight()"
-                       type="range" value="170">
+                <input class="form-control-range" id="spot-light-cone-out" max="150" min="0" oninput="changeSpotLight()"
+                       type="range" value="150">
             </div>
         </div>
 
@@ -356,7 +356,7 @@
         <label class="parent-label mt-1">Specular shiny</label>
         <div class="row">
             <label for="specular-shiny">&gamma;</label>
-            <input class="form-control-range" id="specular-shiny" max="200" min="0" oninput="setSpecShine()"
+            <input class="form-control-range" id="specular-shiny" max="300" min="1" oninput="setSpecShine()"
                    type="range" value="200">
         </div>
         <label class="parent-label mt-1">Texture mix</label>

@@ -9,7 +9,7 @@ const lights = {
     spot: {
         x: -1.3, y: 0.9, z: 3.0, decay: 0.0,
         theta: 1.44, phi: 1.51,
-        coneIn: 60.0, coneOut: 170.0
+        coneIn: 60.0, coneOut: 150.0
     },
     colors: {
         light: '#ffffff',

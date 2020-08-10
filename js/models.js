@@ -1,3 +1,5 @@
+let onLoad = 0
+
 async function loadModel(modelName) {
     const mesh = new OBJ.Mesh(await utils.get_objstr('models/' + modelName + '/model.obj'))
 
@@ -31,6 +33,7 @@ async function loadModel(modelName) {
     gl.bindTexture(gl.TEXTURE_2D, texture)
     const textureImage = new Image()
     textureImage.src = 'models/' + modelName + '/texture.png'
+    onLoad++
     textureImage.onload = () => {
         gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
@@ -39,6 +42,8 @@ async function loadModel(modelName) {
         gl.bindTexture(gl.TEXTURE_2D, null)
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, texture)
+        onLoad--
+        if (onLoad === 0) $('body').removeClass('loading')
     }
     return {vao, mesh, texture}
 }

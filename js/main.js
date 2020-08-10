@@ -22,32 +22,6 @@ const settings = {
     flightTime: 5.0, height: 0.0
 }
 
-function statusUiUpdate(position, nextPosition, direction) {
-    const missileAngle = utils.cartesianToSpherical(direction)
-
-    $('#missile-x').text(position[0].toFixed(2))
-    $('#missile-y').text(position[1].toFixed(2))
-    $('#missile-z').text(position[2].toFixed(2))
-
-    $('#missile-phi').text(utils.radToDeg(missileAngle.phi).toFixed(1))
-    $('#missile-theta').text(utils.radToDeg(missileAngle.theta).toFixed(1))
-    $('#missile-completion').text((missile.completion * 100).toFixed(1))
-
-    $('#camera-x').text(camera.x.toFixed(2))
-    $('#camera-y').text(camera.y.toFixed(2))
-    $('#camera-z').text(camera.z.toFixed(2))
-    $('#camera-phi').text(camera.elevation.toFixed(1))
-    $('#camera-theta').text(camera.angle.toFixed(1))
-    $('#camera-zoom').text(camera.zoom.toFixed(2))
-
-    $('#start-x').text(missile.start.x.toFixed(2))
-    $('#start-y').text(missile.start.y.toFixed(2))
-    $('#start-z').text(missile.start.z.toFixed(2))
-    $('#end-x').text(missile.end.x.toFixed(2))
-    $('#end-y').text(missile.end.y.toFixed(2))
-    $('#end-z').text(missile.end.z.toFixed(2))
-}
-
 function drawScene() {
     setUniforms()
     const cm = getCameraAndMatrix()
@@ -103,7 +77,7 @@ function drawScene() {
     if (events.playing) missile.completion += (Date.now() - events.lastDrawTimestamp) / (1000.0 * settings.flightTime)
     events.lastDrawTimestamp = Date.now()
 
-    statusUiUpdate(position, nextPosition, missileDirection)
+    statusUiUpdate(position, missileDirection)
     window.requestAnimationFrame(drawScene)
 }
 
@@ -112,7 +86,7 @@ async function main() {
     gl = canvas.getContext('webgl2')
 
     if (!gl) {
-        alert('GL context not opened')
+        alert('WebGL not supported')
         return
     }
     registerListeners()
@@ -131,7 +105,6 @@ async function main() {
     gl.useProgram(program)
 
     drawScene()
-    $('body').removeClass('loading')
 }
 
 window.onload = main

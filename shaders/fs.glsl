@@ -67,11 +67,12 @@ void main() {
     vec4 ambColor = ambientMatColor * (1.0 - DTexMix) + texcol * DTexMix;
 
     vec3 objEyePos = (wo_matrix * vec4(eyePos.xyz, 1.0)).xyz;
+    vec3 objLAPos = (wo_matrix * vec4(LAPos.xyz, 1.0)).xyz;
+    vec3 objLADir = normalize((two_matrix * vec4(LADir.xyz, 1.0)).xyz);
+
     vec3 normalVec = normalize(fs_normal);
     vec3 eyedirVec = normalize(objEyePos - fs_position);
 
-    vec3 objLAPos = (wo_matrix * vec4(LAPos.xyz, 1.0)).xyz;
-    vec3 objLADir = normalize((two_matrix * vec4(LADir.xyz, 1.0)).xyz);
     vec3 LAlightDir = compLightDir(objLAPos, objLADir, LAlightType);
     vec4 LAlightCol = compLightColor(LAlightColor, LADecay, objLAPos, objLADir, LAConeOut, LAConeIn, LAlightType);
 

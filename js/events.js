@@ -7,7 +7,6 @@ function registerListeners() {
     canvas.addEventListener('mousemove', onMouseMove, false)
     canvas.addEventListener('mousewheel', onMouseWheel, false)
     document.addEventListener('keypress', onKeyPress, false)
-    document.addEventListener('onMouseClick', onMouseClick, false)
 }
 
 function onMouseDown(event) {
@@ -19,17 +18,33 @@ function onMouseDown(event) {
 }
 
 function onMouseUp(event) {
-    if (!invalidateClick && Date.now() - mouseDownTimestamp < 500)
-        document.dispatchEvent(new CustomEvent('onMouseClick', {detail: { x: event.pageX, y: event.pageY }}))
+    if (!invalidateClick && Date.now() - mouseDownTimestamp < 500) {
+        const x = 2 * event.pageX / gl.canvas.width - 1.0, y = -2 * event.pageY / gl.canvas.height + 1.0
+        const point = unprojectScreenPoint(landscape.mesh, x, y)
+
+        if (events.selecting) {
+            if (events.selectingStart) {
+                missile.start.x = point[0]
+                missile.start.y = point[1]
+                missile.start.z = point[2]
+            } else {
+                missile.end.x = point[0]
+                missile.end.y = point[1]
+                missile.end.z = point[2]
+            }
+            events.selecting = false
+            updateButtons()
+        }
+    }
     lastMouseX = -100
     lastMouseY = -100
     mouseDown = false
 }
 
 function onMouseMove(event) {
-    if (mouseDown) invalidateClick = true
     const canvas = document.getElementById('canvas')
     if (mouseDown) {
+        invalidateClick = true
         const dx = event.pageX - lastMouseX
         const dy = lastMouseY - event.pageY
         if (event.pageX <= canvas.clientWidth) {
@@ -44,25 +59,6 @@ function onMouseMove(event) {
 function onMouseWheel(event) {
     event.preventDefault()
     if (camera.lookAt) camera.zoom = Math.max(camera.zoom - event.wheelDelta / 2000.0, 0.05)
-}
-
-function onMouseClick(event) {
-    const x = 2 * event.detail.x / gl.canvas.width - 1.0, y = -2 * event.detail.y / gl.canvas.height + 1.0
-    const point = unprojectScreenPoint(landscape.mesh, x, y)
-
-    if (events.selecting) {
-        if (events.selectingStart) {
-            missile.start.x = point[0]
-            missile.start.y = point[1]
-            missile.start.z = point[2]
-        } else {
-            missile.end.x = point[0]
-            missile.end.y = point[1]
-            missile.end.z = point[2]
-        }
-        events.selecting = false
-        updateButtons()
-    }
 }
 
 function onKeyPress(event) {

@@ -31,7 +31,7 @@ function statusUiUpdate(position, nextPosition, direction) {
 
     $('#missile-phi').text(utils.radToDeg(missileAngle.phi).toFixed(1))
     $('#missile-theta').text(utils.radToDeg(missileAngle.theta).toFixed(1))
-    $('#missile-completion').text(((missile.completion - 0.005) * 100).toFixed(1))
+    $('#missile-completion').text((missile.completion * 100).toFixed(1))
 
     $('#camera-x').text(camera.x.toFixed(2))
     $('#camera-y').text(camera.y.toFixed(2))

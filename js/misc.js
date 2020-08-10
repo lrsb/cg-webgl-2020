@@ -4,8 +4,7 @@ function getParabolicPoint(start, end, height, completion) {
     const distance = utils.modulusVector3(direction)
 
     let alpha = Math.asin((end[1] - start[1]) / distance)
-    const a0_gamma = Math.atan2(0.5 * 9.81 * Math.cos(alpha), 0.5 * 9.81 * Math.sin(alpha) + distance) + alpha
-    alpha = Math.min(Math.max(0.0, alpha + Math.PI / 4 * height), a0_gamma)
+    alpha = Math.min(Math.max(0.0, alpha + Math.PI / 2 * height), Math.PI / 2 - 0.005)
     const gamma = Math.atan2(0.5 * 9.81 * Math.cos(alpha), 0.5 * 9.81 * Math.sin(alpha) + distance) + alpha
     const v0 = 0.5 * 9.81 * Math.cos(alpha) / Math.sin(gamma - alpha)
 
@@ -42,7 +41,7 @@ function getCameraAndMatrix() {
 
 function checkCollision(mesh, position, nextPos) {
     //Möller–Trumbore algorithm
-    const vertices = mesh.vertices, indices = mesh.indices, e = 0.00001
+    const vertices = mesh.vertices, indices = mesh.indices, e = 0.0001
     for (let i = 0; i < indices.length; i += 3) {
         const v0 = [vertices[indices[i] * 3], vertices[indices[i] * 3 + 1], vertices[indices[i] * 3 + 2]]
         const v1 = [vertices[indices[i + 1] * 3], vertices[indices[i + 1] * 3 + 1], vertices[indices[i + 1] * 3 + 2]]

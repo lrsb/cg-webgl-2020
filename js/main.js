@@ -5,7 +5,7 @@ const missile = {
         x: -2.989, y: 0.0155, z: 3.711
     }, end: {
         x: 0.523, y: 1.676, z: 1.806
-    }, completion: 0.005, model1: true,
+    }, completion: 0.005, model1: true
 }
 
 const camera = {
@@ -37,7 +37,7 @@ function drawScene() {
     gl.clearColor(color[0], color[1], color[2], 1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    for (let i = 0.01; i < (missile.computeMax ? 5 : events.maxCompletion); i += 0.1 / settings.flightTime) {
+    for (let i = 0.01; i < (events.computeMax ? 5 : events.maxCompletion); i += 0.1 / settings.flightTime) {
         const position = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],
             [missile.end.x, missile.end.y, missile.end.z], settings.height, i)
         const nextPosition = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],
@@ -52,7 +52,7 @@ function drawScene() {
         }
     }
 
-    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion > missile.maxCompletion)) {
+    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion > events.maxCompletion)) {
         events.playing = false
         updateButtons()
     }

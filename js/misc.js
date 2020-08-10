@@ -11,7 +11,7 @@ function getParabolicPoint(start, end, height, completion) {
     const x = v0 * completion * Math.cos(gamma)
     const y = v0 * completion * Math.sin(gamma) - 0.5 * 9.81 * Math.pow(completion, 2)
 
-    return  utils.sumVector(start, [x * normDirection[0], y, x * normDirection[2]])
+    return utils.sumVector(start, [x * normDirection[0], y, x * normDirection[2]])
 }
 
 function getCameraAndMatrix() {
@@ -32,11 +32,11 @@ function getCameraAndMatrix() {
             [v_x[0], v_y[0], v_z[0], cx * camera.zoom + position[0],
                 v_x[1], v_y[1], v_z[1], cy * camera.zoom + position[1],
                 v_x[2], v_y[2], v_z[2], cz * camera.zoom + position[2],
-                0.0,   0.0,   0.0,   1.0]
+                0.0, 0.0, 0.0, 1.0]
         viewMatrix = utils.invertMatrix(view_inv)
         cameraPosition = [cx * camera.zoom + position[0], cy * camera.zoom + position[1], cz * camera.zoom + position[2]]
     }
-    return { viewMatrix, perspectiveMatrix, cameraPosition }
+    return {viewMatrix, perspectiveMatrix, cameraPosition}
 }
 
 function checkCollision(mesh, position, nextPos) {

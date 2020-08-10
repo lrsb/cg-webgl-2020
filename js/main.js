@@ -88,8 +88,8 @@ function drawScene() {
         const angle = lights.lightType[2] === 1 ? lights.spot.phi : 0
         const elevation = lights.lightType[2] === 1 ? lights.spot.theta : 0
         const vect = utils.normalizeVector3([Math.sin(elevation) * Math.sin(angle),
-                                                Math.cos(elevation),
-                                                Math.sin(elevation) * Math.cos(angle)])
+            Math.cos(elevation),
+            Math.sin(elevation) * Math.cos(angle)])
         drawModel(light, utils.MakeWorldFromBetweenVectors(
             lights.lightType[1] === 1 ? lights.point.x : lights.spot.x,
             lights.lightType[1] === 1 ? lights.point.y : lights.spot.y,

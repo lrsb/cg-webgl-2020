@@ -51,10 +51,10 @@ function setUniforms() {
 }
 
 function decodeColor(colorString) {
-    const color = colorString.substring(1,7)
-    return [parseInt(color.substring(0,2), 16) / 255,
-        parseInt(color.substring(2,4), 16) / 255,
-        parseInt(color.substring(4,6),16) / 255]
+    const color = colorString.substring(1, 7)
+    return [parseInt(color.substring(0, 2), 16) / 255,
+        parseInt(color.substring(2, 4), 16) / 255,
+        parseInt(color.substring(4, 6), 16) / 255]
 }
 
 //SETTERS

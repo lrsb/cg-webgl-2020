@@ -5,7 +5,7 @@ const missile = {
         x: -2.989, y: 0.0155, z: 3.711
     }, end: {
         x: 0.523, y: 1.676, z: 1.806
-    }, completion: 0.005, model1: true
+    }, completion: 0.005, model1: true,
 }
 
 const camera = {
@@ -15,7 +15,9 @@ const camera = {
 }
 
 const events = {
-    selecting: false, selectingStart: true, playing: false, lastDrawTimestamp: Date.now()
+    selecting: false, selectingStart: true,
+    playing: false, lastDrawTimestamp: Date.now(),
+    computeMax: true, maxCompletion: 5
 }
 
 const settings = {
@@ -35,8 +37,7 @@ function drawScene() {
     gl.clearColor(color[0], color[1], color[2], 1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    let maxCompletion = 5
-    for (let i = 0.01; i < 5; i += 0.1 / settings.flightTime) {
+    for (let i = 0.01; i < (missile.computeMax ? 5 : events.maxCompletion); i += 0.1 / settings.flightTime) {
         const position = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],
             [missile.end.x, missile.end.y, missile.end.z], settings.height, i)
         const nextPosition = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],
@@ -44,13 +45,14 @@ function drawScene() {
 
         const sphereWorldMatrix = utils.MakeWorld(position[0], position[1], position[2], 0, 0, 0, 0.01)
         drawModel(sphere, sphereWorldMatrix, cm)
-        if (checkCollision(landscape.mesh, position, nextPosition) || position[1] < -0.2) {
-            maxCompletion = i
+        if (events.computeMax && (checkCollision(landscape.mesh, position, nextPosition) || position[1] < -0.2)) {
+            events.maxCompletion = i
+            events.computeMax = false
             break
         }
     }
 
-    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion > maxCompletion)) {
+    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion > missile.maxCompletion)) {
         events.playing = false
         updateButtons()
     }

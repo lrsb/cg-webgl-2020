@@ -32,6 +32,7 @@ function onMouseUp(event) {
                 missile.end.y = point[1]
                 missile.end.z = point[2]
             }
+            events.computeMax = true
             events.selecting = false
             updateButtons()
         }

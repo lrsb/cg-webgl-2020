@@ -1,4 +1,5 @@
 function getParabolicPoint(start, end, height, completion) {
+    //Ballistic trajectory
     const direction = utils.subVector(end, start)
     const normDirection = utils.normalizeVector3([direction[0], 0, direction[2]])
     const distance = utils.modulusVector3(direction)
@@ -39,7 +40,7 @@ function getCameraAndMatrix() {
     return {viewMatrix, perspectiveMatrix, cameraPosition}
 }
 
-function checkCollision(mesh, position, nextPos) {
+function checkCollision(mesh, position, nextPosition) {
     //Möller–Trumbore algorithm
     const vertices = mesh.vertices, indices = mesh.indices, e = 0.0001
     for (let i = 0; i < indices.length; i += 3) {
@@ -49,7 +50,7 @@ function checkCollision(mesh, position, nextPos) {
 
         const v1_0 = utils.subVector(v1, v0)
         const v2_0 = utils.subVector(v2, v0)
-        const h = utils.crossVector(nextPos, v2_0)
+        const h = utils.crossVector(nextPosition, v2_0)
         const a = utils.dotVector(v1_0, h)
         if (Math.abs(a) < e) continue
 
@@ -58,16 +59,17 @@ function checkCollision(mesh, position, nextPos) {
         const u = f * utils.dotVector(s, h)
         if (u < 0.0 || u > 1.0) continue
         const q = utils.crossVector(s, v1_0)
-        const v = f * utils.dotVector(nextPos, q)
+        const v = f * utils.dotVector(nextPosition, q)
         if (v < 0.0 || u + v > 1.0) continue
 
         const t = f * utils.dotVector(v2_0, q)
-        if (t > e) return utils.sumVector(position, utils.scalarVector3(nextPos, t))
+        if (t > e) return utils.sumVector(position, utils.scalarVector3(nextPosition, t))
     }
     return false
 }
 
-function unprojectScreenPoint(model, x, y) {
+function unprojectScreenPoint(mesh, x, y) {
+    //Ray-tracing algorithm
     const cm = getCameraAndMatrix()
     const worldMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1)
     const viewWorldMatrix = utils.multiplyMatrices(worldMatrix, cm.viewMatrix)
@@ -83,5 +85,5 @@ function unprojectScreenPoint(model, x, y) {
     const dirNorm = utils.normalizeVector3(utils.subVector(normUnprojectedRaypoint, cm.cameraPosition))
     const dirMax = utils.scalarVector3(dirNorm, 1000)
     const rayEnd = utils.sumVector(dirMax, cm.cameraPosition)
-    return checkCollision(model, cm.cameraPosition, rayEnd)
+    return checkCollision(mesh, cm.cameraPosition, rayEnd)
 }

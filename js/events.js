@@ -141,6 +141,7 @@ function flightTimeChanged() {
 
 function heightChanged() {
     settings.height = $('#height').val()
+    events.computeMax = true
 }
 
 function statusUiUpdate(position, direction) {

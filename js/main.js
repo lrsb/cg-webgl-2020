@@ -52,7 +52,7 @@ function drawScene() {
         }
     }
 
-    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion > events.maxCompletion)) {
+    if (events.playing && (checkCollision(landscape.mesh, position, nextPosition) || missile.completion >= events.maxCompletion - 0.005)) {
         events.playing = false
         updateButtons()
     }

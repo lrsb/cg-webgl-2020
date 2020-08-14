@@ -1,5 +1,3 @@
-let onLoad = 0
-
 async function loadModel(modelName) {
     const mesh = new OBJ.Mesh(await utils.get_objstr('models/' + modelName + '/model.obj'))
 
@@ -33,17 +31,19 @@ async function loadModel(modelName) {
     gl.bindTexture(gl.TEXTURE_2D, texture)
     const textureImage = new Image()
     textureImage.src = 'models/' + modelName + '/texture.png'
-    onLoad++
+    events.onLoad++
     textureImage.onload = () => {
         gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR)
+        gl.generateMipmap(gl.TEXTURE_2D)
         gl.bindTexture(gl.TEXTURE_2D, null)
-        gl.activeTexture(gl.TEXTURE0)
-        gl.bindTexture(gl.TEXTURE_2D, texture)
-        onLoad--
-        if (onLoad === 0) $('body').removeClass('loading')
+        events.onLoad--
+        if (events.onLoad === 0) $('body').removeClass('loading')
     }
     return {vao, mesh, texture}
 }

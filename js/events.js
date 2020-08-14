@@ -1,4 +1,11 @@
-let mouseDown = false, invalidateClick = false, lastMouseX = -100, lastMouseY = -100, mouseDownTimestamp = Date.now()
+const events = {
+    selecting: false, selectingStart: true,
+    playing: false, lastDrawTimestamp: Date.now(),
+    computeMax: true, maxCompletion: 5,
+    mouseDown: false, invalidateClick: false,
+    lastMouseX: -100, lastMouseY: -100,
+    mouseDownTimestamp: Date.now(), onLoad: 0
+}
 
 function registerListeners() {
     const canvas = document.getElementById('canvas')
@@ -10,17 +17,17 @@ function registerListeners() {
 }
 
 function onMouseDown(event) {
-    mouseDown = true
-    invalidateClick = false
-    mouseDownTimestamp = Date.now()
-    lastMouseX = event.pageX
-    lastMouseY = event.pageY
+    events.mouseDown = true
+    events.invalidateClick = false
+    events.mouseDownTimestamp = Date.now()
+    events.lastMouseX = event.pageX
+    events.lastMouseY = event.pageY
 }
 
 function onMouseUp(event) {
-    if (!invalidateClick && Date.now() - mouseDownTimestamp < 500) {
+    if (!events.invalidateClick && Date.now() - events.mouseDownTimestamp < 500) {
         const x = 2 * event.pageX / gl.canvas.width - 1.0, y = -2 * event.pageY / gl.canvas.height + 1.0
-        const point = unprojectScreenPoint(landscape.mesh, x, y)
+        const point = unprojectScreenPoint(models.landscape.mesh, x, y)
 
         if (events.selecting) {
             if (events.selectingStart) {
@@ -37,23 +44,23 @@ function onMouseUp(event) {
             updateButtons()
         }
     }
-    lastMouseX = -100
-    lastMouseY = -100
-    mouseDown = false
+    events.lastMouseX = -100
+    events.lastMouseY = -100
+    events.mouseDown = false
 }
 
 function onMouseMove(event) {
     const canvas = document.getElementById('canvas')
-    if (mouseDown) {
-        invalidateClick = true
-        const dx = event.pageX - lastMouseX
-        const dy = lastMouseY - event.pageY
+    if (events.mouseDown) {
+        events.invalidateClick = true
+        const dx = event.pageX - events.lastMouseX
+        const dy = events.lastMouseY - event.pageY
         if (event.pageX <= canvas.clientWidth) {
             camera.angle += 0.5 * dx
             camera.elevation += 0.5 * dy
         }
-        lastMouseX = event.pageX
-        lastMouseY = event.pageY
+        events.lastMouseX = event.pageX
+        events.lastMouseY = event.pageY
     }
 }
 
@@ -131,7 +138,7 @@ function play() {
 
 function reset() {
     events.playing = false
-    missile.completion = 0.005
+    missile.completion = MISSILE_COMPLETION_BOUND
     updateButtons()
 }
 
@@ -153,7 +160,7 @@ function statusUiUpdate(position, direction) {
 
     $('#missile-phi').text(utils.radToDeg(missileAngle.phi).toFixed(1))
     $('#missile-theta').text(utils.radToDeg(missileAngle.theta).toFixed(1))
-    $('#missile-completion').text((missile.completion * 100).toFixed(1))
+    $('#missile-completion').text(((missile.completion - MISSILE_COMPLETION_BOUND) * 100).toFixed(1))
 
     $('#camera-x').text(camera.x.toFixed(2))
     $('#camera-y').text(camera.y.toFixed(2))

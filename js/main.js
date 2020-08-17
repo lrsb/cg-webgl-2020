@@ -61,8 +61,9 @@ function drawScene() {
     drawModel(missile.model1 ? models.missile1 : models.missile2, missileWorldMatrix, cm)
     drawModel(models.landscape, utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1), cm)
     if (lights.lightType[1] === 1) {
-        drawModel(models.sphere, utils.MakeWorld(lights.point.x, lights.point.y + 0.1, lights.point.z, 0, 0, 0, 0.05),
-            cm, decodeColor(lights.colors.light), true)
+        let lightColor = decodeColor(lights.colors.light)
+        for (let i = 0; i < lightColor.length; i++) lightColor[i] *= 0.8 + lights.point.decay / 10.0
+        drawModel(models.sphere, utils.MakeWorld(lights.point.x, lights.point.y, lights.point.z, 0, 0, 0, 0.05), cm, lightColor, true)
     } else if (lights.lightType[2] === 1) {
         const angle = lights.lightType[2] === 1 ? lights.spot.phi : 0
         const elevation = lights.lightType[2] === 1 ? lights.spot.theta : 0

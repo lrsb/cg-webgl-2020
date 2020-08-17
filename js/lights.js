@@ -87,21 +87,21 @@ function changeDirectLight() {
 }
 
 function changePointLight() {
-    lights.point.x = $('#point-light-position-x').val()
-    lights.point.y = $('#point-light-position-y').val()
-    lights.point.z = $('#point-light-position-z').val()
-    lights.point.decay = $('#point-light-decay').val()
+    lights.point.x = parseFloat($('#point-light-position-x').val())
+    lights.point.y = parseFloat($('#point-light-position-y').val())
+    lights.point.z = parseFloat($('#point-light-position-z').val())
+    lights.point.decay = parseFloat($('#point-light-decay').val())
 }
 
 function changeSpotLight() {
-    lights.spot.x = $('#spot-light-position-x').val()
-    lights.spot.y = $('#spot-light-position-y').val()
-    lights.spot.z = $('#spot-light-position-z').val()
-    lights.spot.decay = $('#spot-light-decay').val()
+    lights.spot.x = parseFloat($('#spot-light-position-x').val())
+    lights.spot.y = parseFloat($('#spot-light-position-y').val())
+    lights.spot.z = parseFloat($('#spot-light-position-z').val())
+    lights.spot.decay = parseFloat($('#spot-light-decay').val())
     lights.spot.phi = utils.degToRad($('#spot-light-position-phi').val())
     lights.spot.theta = utils.degToRad($('#spot-light-position-theta').val())
-    lights.spot.coneIn = $('#spot-light-cone-in').val()
-    lights.spot.coneOut = $('#spot-light-cone-out').val()
+    lights.spot.coneIn = parseFloat($('#spot-light-cone-in').val())
+    lights.spot.coneOut = parseFloat($('#spot-light-cone-out').val())
 }
 
 function setColor() {
@@ -114,9 +114,9 @@ function setColor() {
 }
 
 function setSpecShine() {
-    lights.shiny = $('#specular-shiny').val()
+    lights.shiny = parseFloat($('#specular-shiny').val())
 }
 
 function setTextureMix() {
-    lights.tMix = $('#texture-mix').val()
+    lights.tMix = parseFloat($('#texture-mix').val())
 }

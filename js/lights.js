@@ -16,7 +16,8 @@ const lights = {
         ambient: '#000000',
         diffuse: '#ffffff',
         material: '#ffffff',
-        specular: '#ffffff'
+        specular: '#ffffff',
+        trajectory: '#ffffff'
     }
 }
 
@@ -109,6 +110,7 @@ function setColor() {
     lights.colors.diffuse = $('#diffuse-color').val()
     lights.colors.material = $('#ambient-mat-color').val()
     lights.colors.specular = $('#specular-color').val()
+    lights.colors.trajectory = $('#trajectory-color').val()
 }
 
 function setSpecShine() {

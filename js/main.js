@@ -44,7 +44,7 @@ function drawScene() {
             [missile.end.x, missile.end.y, missile.end.z], settings.height, i + 0.01)
 
         const sphereWorldMatrix = utils.MakeWorld(position[0], position[1], position[2], 0, 0, 0, 0.01)
-        drawModel(models.sphere, sphereWorldMatrix, cm)
+        drawModel(models.sphere, sphereWorldMatrix, cm, decodeColor(lights.colors.trajectory), false)
         if (events.computeMax && (checkCollision(models.landscape.mesh, position, nextPosition) || position[1] < -0.2)) {
             events.maxCompletion = i
             events.computeMax = false
@@ -60,21 +60,20 @@ function drawScene() {
     const missileWorldMatrix = utils.MakeWorldFromBetweenVectors(position[0], position[1], position[2], [0, 0, 1], missileDirection, 0.01)
     drawModel(missile.model1 ? models.missile1 : models.missile2, missileWorldMatrix, cm)
     drawModel(models.landscape, utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1), cm)
-    if (lights.lightType[1] === 1 || lights.lightType[2] === 1) {
+    if (lights.lightType[1] === 1) {
+        drawModel(models.sphere, utils.MakeWorld(lights.point.x, lights.point.y + 0.1, lights.point.z, 0, 0, 0, 0.05),
+            cm, decodeColor(lights.colors.light), true)
+    } else if (lights.lightType[2] === 1) {
         const angle = lights.lightType[2] === 1 ? lights.spot.phi : 0
         const elevation = lights.lightType[2] === 1 ? lights.spot.theta : 0
         const vect = utils.normalizeVector3([Math.sin(elevation) * Math.sin(angle),
             Math.cos(elevation),
             Math.sin(elevation) * Math.cos(angle)])
-        drawModel(models.light, utils.MakeWorldFromBetweenVectors(
-            lights.lightType[1] === 1 ? lights.point.x : lights.spot.x,
-            lights.lightType[1] === 1 ? lights.point.y : lights.spot.y,
-            lights.lightType[1] === 1 ? lights.point.z : lights.spot.z,
-            [0, 0, -1], vect, 0.01), cm)
+        drawModel(models.light, utils.MakeWorldFromBetweenVectors(lights.spot.x, lights.spot.y, lights.spot.z, [0, 0, -1], vect, 0.01), cm)
     }
     if (camera.lookAt) {
         const sphereWorldMatrix = utils.MakeWorld(camera.x, camera.y, camera.z, 0, 0, 0, 0.05)
-        drawModel(models.sphere, sphereWorldMatrix, cm)
+        drawModel(models.sphere, sphereWorldMatrix, cm, [0, 1, 0], true)
     }
     if (events.playing) missile.completion += (Date.now() - events.lastDrawTimestamp) / (1000.0 * settings.flightTime)
     events.lastDrawTimestamp = Date.now()

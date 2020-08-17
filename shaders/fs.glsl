@@ -11,7 +11,9 @@ out vec4 out_color;
 uniform mat4 wo_matrix;
 uniform mat4 two_matrix;
 uniform vec3 eyePos;
+
 uniform sampler2D u_texture;
+uniform vec4 fillColor;
 
 uniform vec4 LAlightType;
 uniform vec3 LAPos;
@@ -62,7 +64,11 @@ vec4 compSpecular(vec3 lightDir, vec4 lightCol, vec3 normalVec, vec3 eyedirVec) 
 }
 
 void main() {
-    vec4 texcol = texture(u_texture, fs_uv);
+    vec4 texcol = fillColor.a != 0.0 ? fillColor : texture(u_texture, fs_uv);
+    if (fillColor.a == 1.0) {
+        out_color = texcol;
+        return;
+    }
     vec4 diffColor = diffuseColor * (1.0 - DTexMix) + texcol * DTexMix;
     vec4 ambColor = ambientMatColor * (1.0 - DTexMix) + texcol * DTexMix;
 

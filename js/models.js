@@ -47,7 +47,7 @@ async function loadModel(modelName) {
     return {vao, mesh, texture}
 }
 
-function drawModel(model, worldMatrix, cm) {
+function drawModel(model, worldMatrix, cm, fillColor, ignoreAmbient) {
     const viewWorldMatrix = utils.multiplyMatrices(cm.viewMatrix, worldMatrix)
     const projectionMatrix = utils.multiplyMatrices(cm.perspectiveMatrix, viewWorldMatrix)
 
@@ -55,6 +55,9 @@ function drawModel(model, worldMatrix, cm) {
     gl.uniformMatrix4fv(gl.getUniformLocation(program, 'wo_matrix'), gl.FALSE, utils.transposeMatrix(utils.invertMatrix(worldMatrix)))
     gl.uniformMatrix4fv(gl.getUniformLocation(program, 'two_matrix'), gl.FALSE, worldMatrix)
     gl.uniformMatrix4fv(gl.getUniformLocation(program, 'matrix'), gl.FALSE, utils.transposeMatrix(projectionMatrix))
+
+    fillColor = fillColor == null ? [0, 0, 0, 0] : [fillColor[0], fillColor[1], fillColor[2], ignoreAmbient ? 1.0 : 0.5]
+    gl.uniform4f(gl.getUniformLocation(program, 'fillColor'), fillColor[0], fillColor[1], fillColor[2], fillColor[3])
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, model.texture)

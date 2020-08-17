@@ -37,7 +37,7 @@ function drawScene() {
     gl.clearColor(ambientColor[0], ambientColor[1], ambientColor[2], 1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    for (let i = 0.01; i < (events.computeMax ? 5 : events.maxCompletion); i += 0.1 / settings.flightTime) {
+    for (let i = 0.015; i < (events.computeMax ? 5 : events.maxCompletion); i += 0.1 / settings.flightTime) {
         const position = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],
             [missile.end.x, missile.end.y, missile.end.z], settings.height, i)
         const nextPosition = getParabolicPoint([missile.start.x, missile.start.y, missile.start.z],

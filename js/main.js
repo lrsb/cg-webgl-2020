@@ -15,13 +15,13 @@ const missile = {
 }
 
 const camera = {
-    x: -2.0, y: 2.0, z: 1.0,
-    elevation: -10.0, angle: 90.0,
+    x: 0.0, y: 5.8, z: 0.0,
+    elevation: -20.0, angle: 60.0,
     zoom: 0.7, lookAt: true
 }
 
 const settings = {
-    flightTime: 5.0, height: 0.0
+    flightTime: 5.0, height: 1.0
 }
 
 function drawScene() {
@@ -45,12 +45,17 @@ function drawScene() {
 
         const sphereWorldMatrix = utils.MakeWorld(position[0], position[1], position[2], 0, 0, 0, 0.01)
         drawModel(models.sphere, sphereWorldMatrix, cm, decodeColor(lights.colors.trajectory), false)
-        if (events.computeMax && (checkCollision(models.landscape.mesh, position, nextPosition) || position[1] < -0.2)) {
+        if (events.computeMax && (checkCollision(models.landscape.mesh, position, nextPosition) || position[1] < -0.1)) {
             events.maxCompletion = i
             events.computeMax = false
             break
         }
     }
+
+    const startSphereWorldMatrix = utils.MakeWorld(missile.start.x, missile.start.y, missile.start.z, 0, 0, 0, 0.05)
+    drawModel(models.sphere, startSphereWorldMatrix, cm, [0, 1, 0], true)
+    const endSphereWorldMatrix = utils.MakeWorld(missile.end.x, missile.end.y, missile.end.z, 0, 0, 0, 0.05)
+    drawModel(models.sphere, endSphereWorldMatrix, cm, [1, 0, 0], true)
 
     if (events.playing && (checkCollision(models.landscape.mesh, position, nextPosition) || missile.completion >= events.maxCompletion - MISSILE_COMPLETION_BOUND)) {
         events.playing = false
@@ -60,6 +65,7 @@ function drawScene() {
     const missileWorldMatrix = utils.MakeWorldFromBetweenVectors(position[0], position[1], position[2], [0, 0, 1], missileDirection, 0.01)
     drawModel(missile.model1 ? models.missile1 : models.missile2, missileWorldMatrix, cm)
     drawModel(models.landscape, utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1), cm)
+
     if (lights.lightType[1] === 1) {
         let lightColor = decodeColor(lights.colors.light)
         for (let i = 0; i < lightColor.length; i++) lightColor[i] *= 0.8 + lights.point.decay / 10.0
@@ -72,10 +78,13 @@ function drawScene() {
             Math.sin(elevation) * Math.cos(angle)])
         drawModel(models.light, utils.MakeWorldFromBetweenVectors(lights.spot.x, lights.spot.y, lights.spot.z, [0, 0, -1], vect, 0.01), cm)
     }
+
     if (camera.lookAt) {
         const sphereWorldMatrix = utils.MakeWorld(camera.x, camera.y, camera.z, 0, 0, 0, 0.05)
-        drawModel(models.sphere, sphereWorldMatrix, cm, [0, 1, 0], true)
+        drawModel(models.sphere, sphereWorldMatrix, cm, [0, 0, 1], true)
     }
+
+
     if (events.playing) missile.completion += (Date.now() - events.lastDrawTimestamp) / (1000.0 * settings.flightTime)
     events.lastDrawTimestamp = Date.now()
 
@@ -88,7 +97,7 @@ async function main() {
     gl = canvas.getContext('webgl2')
 
     if (!gl) {
-        alert('WebGL not supported')
+        alert('WebGL2 not supported')
         return
     }
     registerListeners()

@@ -9,7 +9,7 @@ in vec3 fs_normal;
 out vec4 out_color;
 
 uniform mat4 wo_matrix;
-uniform mat4 two_matrix;
+uniform mat4 w_matrix;
 uniform vec3 eyePos;
 
 uniform sampler2D u_texture;
@@ -74,7 +74,7 @@ void main() {
 
     vec3 objEyePos = (wo_matrix * vec4(eyePos.xyz, 1.0)).xyz;
     vec3 objLAPos = (wo_matrix * vec4(LAPos.xyz, 1.0)).xyz;
-    vec3 objLADir = normalize((two_matrix * vec4(LADir.xyz, 1.0)).xyz);
+    vec3 objLADir = normalize((w_matrix * vec4(LADir.xyz, 1.0)).xyz);
 
     vec3 normalVec = normalize(fs_normal);
     vec3 eyedirVec = normalize(objEyePos - fs_position);

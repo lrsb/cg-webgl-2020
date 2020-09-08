@@ -3,14 +3,14 @@ function getParabolicPoint(start, end, height, completion) {
     const direction = utils.subVector(end, start)
     const normDirection = utils.normalizeVector3([direction[0], 0, direction[2]])
     const distance = utils.modulusVector3(direction)
+    const g = 9.81 * height
 
     let alpha = Math.asin((end[1] - start[1]) / distance)
-    alpha = Math.min(Math.max(0.0, alpha + Math.PI / 2 * height), Math.PI / 2 - 0.005)
-    const gamma = Math.atan2(0.5 * 9.81 * Math.cos(alpha), 0.5 * 9.81 * Math.sin(alpha) + distance) + alpha
-    const v0 = 0.5 * 9.81 * Math.cos(alpha) / Math.sin(gamma - alpha)
+    const gamma = Math.atan2(0.5 * g * Math.cos(alpha), 0.5 * g * Math.sin(alpha) + distance) + alpha
+    const v0 = 0.5 * g * Math.cos(alpha) / Math.sin(gamma - alpha)
 
     const x = v0 * completion * Math.cos(gamma)
-    const y = v0 * completion * Math.sin(gamma) - 0.5 * 9.81 * Math.pow(completion, 2)
+    const y = v0 * completion * Math.sin(gamma) - 0.5 * g * Math.pow(completion, 2)
 
     return utils.sumVector(start, [x * normDirection[0], y, x * normDirection[2]])
 }

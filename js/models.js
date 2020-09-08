@@ -53,7 +53,7 @@ function drawModel(model, worldMatrix, cm, fillColor, ignoreAmbient) {
 
     gl.uniform3f(gl.getUniformLocation(program, 'eyePos'), cm.cameraPosition[0], cm.cameraPosition[1], cm.cameraPosition[2])
     gl.uniformMatrix4fv(gl.getUniformLocation(program, 'wo_matrix'), gl.FALSE, utils.transposeMatrix(utils.invertMatrix(worldMatrix)))
-    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'two_matrix'), gl.FALSE, worldMatrix)
+    gl.uniformMatrix4fv(gl.getUniformLocation(program, 'w_matrix'), gl.FALSE, worldMatrix)
     gl.uniformMatrix4fv(gl.getUniformLocation(program, 'matrix'), gl.FALSE, utils.transposeMatrix(projectionMatrix))
 
     fillColor = fillColor == null ? [0, 0, 0, 0] : [fillColor[0], fillColor[1], fillColor[2], ignoreAmbient ? 1.0 : 0.5]

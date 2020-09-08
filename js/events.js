@@ -41,6 +41,7 @@ function onMouseUp(event) {
             }
             events.computeMax = true
             events.selecting = false
+            missile.completion = MISSILE_COMPLETION_BOUND
             updateButtons()
         }
     }
@@ -73,27 +74,27 @@ function onKeyPress(event) {
     switch (event.key) {
         case 'w':
         case 'W':
-            camera.x += camera.lookAt ? 0.0 : 0.1
+            camera.x += 0.1
             break
         case 's':
         case 'S':
-            camera.x -= camera.lookAt ? 0.0 : 0.1
+            camera.x -= 0.1
             break
         case 'a':
         case 'A':
-            camera.z -= camera.lookAt ? 0.0 : 0.1
+            camera.z -= 0.1
             break
         case 'd':
         case 'D':
-            camera.z += camera.lookAt ? 0.0 : 0.1
+            camera.z += 0.1
             break
         case 'q':
         case 'Q':
-            camera.y -= camera.lookAt ? 0.0 : 0.1
+            camera.y -= 0.1
             break
         case 'e':
         case 'E':
-            camera.y += camera.lookAt ? 0.0 : 0.1
+            camera.y += 0.1
             break
     }
 }

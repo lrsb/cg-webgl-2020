@@ -42,7 +42,7 @@ async function loadModel(modelName) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
         gl.bindTexture(gl.TEXTURE_2D, null)
         events.onLoad--
-        if (events.onLoad === 0) $('body').removeClass('loading')
+        if (!events.onLoad) $('body').removeClass('loading')
     }
     return {vao, mesh, texture}
 }

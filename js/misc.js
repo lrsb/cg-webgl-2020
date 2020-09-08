@@ -5,7 +5,7 @@ function getParabolicPoint(start, end, height, completion) {
     const distance = utils.modulusVector3(direction)
     const g = 9.81 * height
 
-    let alpha = Math.asin((end[1] - start[1]) / distance)
+    const alpha = Math.asin((end[1] - start[1]) / distance)
     const gamma = Math.atan2(0.5 * g * Math.cos(alpha), 0.5 * g * Math.sin(alpha) + distance) + alpha
     const v0 = 0.5 * g * Math.cos(alpha) / Math.sin(gamma - alpha)
 

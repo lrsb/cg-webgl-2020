@@ -61,6 +61,7 @@ function drawScene() {
         events.playing = false
         updateButtons()
     }
+
     const missileDirection = utils.normalizeVector3(utils.subVector(nextPosition, position))
     const missileWorldMatrix = utils.MakeWorldFromBetweenVectors(position[0], position[1], position[2], [0, 0, 1], missileDirection, 0.01)
     drawModel(missile.model1 ? models.missile1 : models.missile2, missileWorldMatrix, cm)
@@ -83,7 +84,6 @@ function drawScene() {
         const sphereWorldMatrix = utils.MakeWorld(camera.x, camera.y, camera.z, 0, 0, 0, 0.05)
         drawModel(models.sphere, sphereWorldMatrix, cm, [0, 0, 1], true)
     }
-
 
     if (events.playing) missile.completion += (Date.now() - events.lastDrawTimestamp) / (1000.0 * settings.flightTime)
     events.lastDrawTimestamp = Date.now()

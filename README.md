@@ -5,7 +5,7 @@
 Missile simulator
 </h1>
 <h3 align="center">Ballistic trajectory missile simulator.</h3>
-<h5 align="center">A pure Javascript implementation of a missile simulator with GLSL shaders.</h5>
+<h5 align="center">A Javascript implementation of a missile simulator with GLSL shaders.</h5>
 
 <p align="center">
   <a href="#description">Description</a> •
